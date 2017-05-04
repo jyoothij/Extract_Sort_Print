@@ -1,4 +1,4 @@
-//
+ //
 //  main.c
 //  J_C
 //
@@ -64,8 +64,6 @@ void addToHeap(uint16_t item)
     }
 }
 
-
-
 /**  FUNCTIONALITY:
         This function ints the read buffer.
  **/
@@ -85,7 +83,6 @@ void init_log_array()
         return;
     }
 }
-
 
 /** FUNCTIONALITY:
         This function buffers the last read values into a circular buffer of
@@ -111,45 +108,47 @@ void writeTofile(FILE* w_ptr)
 {
     const char *sort_text = "--Sorted Max 32 Values--";
     fprintf(w_ptr, "%s\n", sort_text);
+    uint16_t max_values_to_print = MAX_VALUES;
     
-    // if heap_size = 0 and read_buffer_size = 0, then nothing is read,
-    // so do nothing
-    
+    // if heap_size = 0 then nothing is read, return
     // else, post process heap and read_buffer
    
-    if( (heap_size != 0) && (heap_size < MAX_VALUES) )
+    if(heap_size == 0)
     {
-        //have not sorted the array, build heap now
-        buildHeap();
-    }
-   
-    while(heap_size > 0)
-    {
-        int min_element = heap_poll();
-        printf("min element is %d \n",min_element);
-        
-        fprintf(w_ptr,"%d \n", min_element);
+        return;
     }
     
-    const char* log_text = "--Last 32 Values--";
-    fprintf(w_ptr, "%s\n", log_text);
+    else
+    {
+        if( heap_size < MAX_VALUES )
+        {
+            //have not sorted the array, build heap now
+            buildHeap();
+            max_values_to_print =read_buff_idx;
+            read_buff_idx = 0;
+        }
     
-    uint16_t max_values_to_print = MAX_VALUES;
-    if( (read_buff_idx !=0) &&(read_buff_idx < MAX_VALUES) )
-    {
-        max_values_to_print = read_buff_idx;
-        read_buff_idx = 0;     
+        while(heap_size > 0)
+        {
+            int min_element = heap_poll();
+            printf("min element is %d \n",min_element);
+            
+            fprintf(w_ptr,"%d \n", min_element);
+        }
+    
+        const char* log_text = "--Last 32 Values--";
+        fprintf(w_ptr, "%s\n", log_text);
+    
+        for(int i = read_buff_idx; ; )
+        {
+            fprintf(w_ptr,"%d \n",read_buff[i]);
+            i = (i+1)%max_values_to_print;
+            if(i == read_buff_idx)
+                break;
+        }
     }
-    for(int i = read_buff_idx; ; )
-    {
-        fprintf(w_ptr,"%d \n",read_buff[i]);
-        i = (i+1)%max_values_to_print;
-        if(i == read_buff_idx)
-            break;
-    }
+
 }
-
-
 /** FUNCTIONALITY :
         This function extracts 6 bytes in a go, which is 6*8 = 48 bits values
         from the binary stream in the file.
@@ -249,7 +248,6 @@ int extract_and_store(const char* ip_file , const char* op_file)
     /* Now write to the file */
     writeTofile(ptr_write_myfile);
     fclose(ptr_write_myfile);
-    
     return 0;
 }
 
@@ -261,9 +259,10 @@ int main()
     /*  STUB - not sure how the file names are passed here, so stubbing this part
      get file names into const char* input_file_name , const char* output_file_name
      */
+    
     /* Example:
     const char* input_file_name = "/Users/Jyothi/Desktop/inputs/test3.bin";
-    const char* output_file_name = "/Users/Jyothi/Desktop/inputs/Jotest3.txt";
+    const char* output_file_name = "/Users/Jyothi/Desktop/inputs/jotest3.txt";
     */
     
     if(extract_and_store(input_file_name , output_file_name))

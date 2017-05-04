@@ -112,11 +112,17 @@ void writeTofile(FILE* w_ptr)
     const char *sort_text = "--Sorted Max 32 Values--";
     fprintf(w_ptr, "%s\n", sort_text);
     
-    if(heap_size < MAX_VALUES)
+    // if heap_size = 0 and read_buffer_size = 0, then nothing is read,
+    // so do nothing
+    
+    // else, post process heap and read_buffer
+   
+    if( (heap_size != 0) && (heap_size < MAX_VALUES) )
     {
         //have not sorted the array, build heap now
         buildHeap();
     }
+   
     while(heap_size > 0)
     {
         int min_element = heap_poll();
@@ -129,11 +135,10 @@ void writeTofile(FILE* w_ptr)
     fprintf(w_ptr, "%s\n", log_text);
     
     uint16_t max_values_to_print = MAX_VALUES;
-    if(read_buff_idx < MAX_VALUES)
+    if( (read_buff_idx !=0) &&(read_buff_idx < MAX_VALUES) )
     {
         max_values_to_print = read_buff_idx;
-        read_buff_idx = 0;
-        
+        read_buff_idx = 0;     
     }
     for(int i = read_buff_idx; ; )
     {
@@ -256,8 +261,10 @@ int main()
     /*  STUB - not sure how the file names are passed here, so stubbing this part
      get file names into const char* input_file_name , const char* output_file_name
      */
+    /* Example:
     const char* input_file_name = "/Users/Jyothi/Desktop/inputs/test3.bin";
     const char* output_file_name = "/Users/Jyothi/Desktop/inputs/Jotest3.txt";
+    */
     
     if(extract_and_store(input_file_name , output_file_name))
         printf("Error.. could not extract the values \n");

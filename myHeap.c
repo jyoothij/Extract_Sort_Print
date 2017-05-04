@@ -107,11 +107,8 @@ void swap(uint16_t indexOne, uint16_t indexTwo)
  **/
 int peek()
 {
-    
-        return heap[0];
-    
+    return heap[0];
 }
-
 
 /** Swap values down the Heap. **/
 void heapifyDown()
@@ -148,7 +145,6 @@ void heapifyUp()
         index = getParentIndex(index);
     }
 }
-
 
 /** Extracts root element from Heap.
     @returns negative number if Heap is empty.

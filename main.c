@@ -106,10 +106,6 @@ void log_numbers(uint16_t num)
 **/
 void writeTofile(FILE* w_ptr)
 {
-    const char *sort_text = "--Sorted Max 32 Values--";
-    fprintf(w_ptr, "%s\n", sort_text);
-    uint16_t max_values_to_print = MAX_VALUES;
-    
     // if heap_size = 0 then nothing is read, return
     // else, post process heap and read_buffer
    
@@ -117,12 +113,15 @@ void writeTofile(FILE* w_ptr)
     {
         return;
     }
-    
     else
     {
+        const char *sort_text = "--Sorted Max 32 Values--";
+        fprintf(w_ptr, "%s\n", sort_text);
+        uint16_t max_values_to_print = MAX_VALUES;
+     
         if( heap_size < MAX_VALUES )
         {
-            //have not sorted the array, build heap now
+            //have not sorted the heap, build heap now
             buildHeap();
             max_values_to_print =read_buff_idx;
             read_buff_idx = 0;
@@ -131,8 +130,6 @@ void writeTofile(FILE* w_ptr)
         while(heap_size > 0)
         {
             int min_element = heap_poll();
-            printf("min element is %d \n",min_element);
-            
             fprintf(w_ptr,"%d \n", min_element);
         }
     
@@ -164,8 +161,7 @@ int extract_and_store(const char* ip_file , const char* op_file)
     uint16_t extracted_number = 0;
     unsigned long loop_count = 0;
     unsigned long res = 1 ;
-    
-    
+        
     if( (ip_file == NULL) || (op_file == NULL) )
     {
         printf("Error.. check input file / output file passed.. \n");
